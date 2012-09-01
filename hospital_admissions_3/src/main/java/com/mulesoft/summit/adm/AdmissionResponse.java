@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="status" type="{http://www.mule-health.com/HospitalInformation/}StatusType"/>
  *         &lt;element name="episode" type="{http://www.mule-health.com/HospitalInformation/}EpisodeType" minOccurs="0"/>
- *         &lt;element name="insurancePlan" type="{http://www.mule-health.com/HospitalInformation/}InsurancePlanType" minOccurs="0"/>
+ *         &lt;element name="insurance" type="{http://www.mule-health.com/HospitalInformation/}Insurance" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "status",
     "episode",
-    "insurancePlan"
+    "insurance"
 })
 @XmlRootElement(name = "AdmissionResponse")
 public class AdmissionResponse {
@@ -41,7 +41,7 @@ public class AdmissionResponse {
     @XmlElement(required = true)
     protected StatusType status;
     protected EpisodeType episode;
-    protected InsurancePlanType insurancePlan;
+    protected Insurance insurance;
 
     /**
      * Gets the value of the status property.
@@ -92,27 +92,27 @@ public class AdmissionResponse {
     }
 
     /**
-     * Gets the value of the insurancePlan property.
+     * Gets the value of the insurance property.
      * 
      * @return
      *     possible object is
-     *     {@link InsurancePlanType }
+     *     {@link Insurance }
      *     
      */
-    public InsurancePlanType getInsurancePlan() {
-        return insurancePlan;
+    public Insurance getInsurance() {
+        return insurance;
     }
 
     /**
-     * Sets the value of the insurancePlan property.
+     * Sets the value of the insurance property.
      * 
      * @param value
      *     allowed object is
-     *     {@link InsurancePlanType }
+     *     {@link Insurance }
      *     
      */
-    public void setInsurancePlan(InsurancePlanType value) {
-        this.insurancePlan = value;
+    public void setInsurance(Insurance value) {
+        this.insurance = value;
     }
 
 }

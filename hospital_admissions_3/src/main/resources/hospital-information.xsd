@@ -19,7 +19,7 @@
                <xs:sequence>
                   <xs:element name="status" type="hos:StatusType"/>
                   <xs:element minOccurs="0" name="episode" type="hos:EpisodeType"/>
-                  <xs:element minOccurs="0" name="insurancePlan" type="hos:InsurancePlanType" />
+                  <xs:element minOccurs="0" name="insurance" type="hos:Insurance" />
                </xs:sequence>
             </xs:complexType>
          </xs:element>
@@ -30,12 +30,19 @@
             	<xs:element name="department" type="xs:string" />
             </xs:sequence>
          </xs:complexType>
+         <xs:element name="Episode" type="hos:EpisodeType" />
          <xs:complexType name="EpisodeType">
             <xs:sequence>
                <xs:element name="patientId" type="xs:string"/>
                <xs:element name="episodeId" type="xs:string"/>
                <xs:element name="startDate" type="xs:date"/>
                <xs:element name="minDurationDays" type="xs:integer"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="Insurance">
+         	<xs:sequence>
+         		<xs:element name="plan" type="hos:InsurancePlanType" />
+         		<xs:element name="caseNumber" type="xs:string" />
             </xs:sequence>
          </xs:complexType>
          <xs:simpleType name="GenderType">

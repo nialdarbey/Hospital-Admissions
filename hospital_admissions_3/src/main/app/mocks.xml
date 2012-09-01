@@ -27,21 +27,13 @@ http://www.mulesoft.org/schema/mule/ee/jdbc http://www.mulesoft.org/schema/mule/
 				</cxf:ws-custom-validator>
 			</cxf:ws-security>
 		</cxf:jaxws-service>
-        <component class="com.mulesoft.summit.ins.InsuranceServiceImpl" doc:name="InsuranceServiceImpl"/>
-    </flow>
-    <flow name="mocksFlow2" doc:name="mocksFlow2">
-        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="9191" path="approvals" doc:name=":9191/approvals"/>
-        <set-payload value="#['ok']" doc:name="Set Payload"/>
+        <component class="com.mulesoft.summit.service.InsuranceServiceImpl" doc:name="InsuranceServiceImpl"/>
     </flow>
     <flow name="clinic_service" doc:name="clinic_service">
         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="9494" path="ehr" doc:name=":9494/ehr"/>
         <jersey:resources doc:name="EpisodeResource">
-            <component class="com.mulesoft.summit.ehr.EpisodeResource"/>
+            <component class="com.mulesoft.summit.service.EpisodeResource"/>
         </jersey:resources>
-    </flow>
-    <flow name="mocksFlow1" doc:name="mocksFlow1">
-        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="9292" path="ehr" doc:name=":9292/ehr"/>
-        <set-payload value="#['x']" doc:name="Set Payload"/>
     </flow>
     
 </mule>

@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Graph author="nialdarbey" created="Thu Aug 30 16:20:12 GMT-03:00 2012" guiVersion="3.3.0.M2" id="1346448487379" licenseCode="Unlicensed" licenseType="Unknown" modified="Thu Aug 30 16:20:12 GMT-03:00 2012" modifiedBy="nialdarbey" name="to Billing CSV" revision="1.0" showComponentDetails="false">
+<Graph author="nialdarbey" created="Thu Aug 30 16:20:12 GMT-03:00 2012" guiVersion="3.3.0.M2" id="1346511278179" licenseCode="Unlicensed" licenseType="Unknown" modified="Thu Aug 30 16:20:12 GMT-03:00 2012" modifiedBy="nialdarbey" name="to Billing CSV" revision="1.0" showComponentDetails="false">
 <Global>
 <Metadata _type="Lookup" id="Metadata2">
-<Record fieldDelimiter="," name="BillingCosts" recordDelimiter="\n" type="delimited">
+<Record fieldDelimiter="," name="BillingCriteria" recordDelimiter="\n" type="delimited">
 <Field label="PLAN" name="PLAN" type="string"/>
 <Field eofAsDelimiter="true" label="COST" name="COST" type="string"/>
-</Record>
-</Metadata>
-<Metadata __sourcePath="{http://www.mule-health.com/HospitalInformation/=ns0}/ns0:episode" _dataStructure="OBJECT" _id="__id" _type="Input" id="Metadata0">
-<Record fieldDelimiter="|" name="Episode" recordDelimiter="&#10;" type="delimited">
-<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
-<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:episode/patientId" label="patientId" name="patientId" type="string"/>
-<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:episode/episodeId" label="episodeId" name="episodeId" type="string"/>
-<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:episode/startDate" label="startDate" name="startDate" type="date"/>
-<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:episode/minDurationDays" label="minDurationDays" name="minDurationDays" type="integer"/>
 </Record>
 </Metadata>
 <Metadata _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _type="Output" id="Metadata1">
@@ -26,33 +17,38 @@
 <Field eofAsDelimiter="true" label="Cost" name="Cost" type="string"/>
 </Record>
 </Metadata>
-<LookupTable fileURL="/Users/nialdarbey/MuleStudio/workspace/hospital_admissions_3/src/main/resources/billing-criteria.csv" id="BillingCosts" key="PLAN" metadata="Metadata2" name="BillingCosts" type="simpleLookup">
+<Metadata __sourcePath="{http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode" _dataStructure="OBJECT" _id="__id" _type="Input" id="Metadata0">
+<Record fieldDelimiter="|" name="EpisodeType" recordDelimiter="&#10;" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/patientId" label="patientId" name="patientId" type="string"/>
+<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/episodeId" label="episodeId" name="episodeId" type="string"/>
+<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/startDate" label="startDate" name="startDate" type="date"/>
+<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/minDurationDays" label="minDurationDays" name="minDurationDays" type="integer"/>
+</Record>
+</Metadata>
+<LookupTable fileURL="/Users/nialdarbey/git/Hospital Admissions/hospital_admissions_3/src/main/resources/billing-criteria.csv" id="BillingCriteria" key="PLAN" metadata="Metadata2" name="BillingCriteria" type="simpleLookup">
 <attr name="lookupType"><![CDATA[CSV]]></attr>
 </LookupTable>
 <Dictionary>
 <Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
 <Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
-<Entry id="DictionaryEntry2" input="true" name="patientId" output="false" type="string"/>
-<Entry id="DictionaryEntry3" input="true" name="insurancePlan" output="false" type="string"/>
-<Entry id="DictionaryEntry4" input="true" name="insuranceCaseNumber" output="false" type="string"/>
-<Entry id="DictionaryEntry5" input="true" name="episodeId" output="false" type="string"/>
-<Entry id="DictionaryEntry6" input="true" name="episodeDuration" output="false" type="string"/>
+<Entry id="DictionaryEntry2" input="true" name="insurancePlan" output="false" type="string"/>
+<Entry id="DictionaryEntry3" input="true" name="insuranceCaseNumber" output="false" type="string"/>
 </Dictionary>
 </Global>
 <Phase number="0">
 <Node enabled="enabled" fileURL="dict:outputPayload" guiHeight="0" guiName="CSV WRITER" guiWidth="0" guiX="680" guiY="20" id="DATA_WRITER0" type="DATA_WRITER">
 <attr name="_data_format"><![CDATA[CSV]]></attr>
 </Node>
-<Node enabled="enabled" guiHeight="0" guiName="ns0:episode_to_Episodes" guiWidth="0" guiX="240" guiY="20" id="REFORMAT0" type="REFORMAT">
+<Node enabled="enabled" guiHeight="0" guiName="ns0:Episode_to_Episodes" guiWidth="0" guiX="240" guiY="20" id="REFORMAT0" type="REFORMAT">
 <attr name="transform"><![CDATA[//#CTL2
 
 // Transforms input record into output record.
 function integer transform() {
-	$out.0.Cost = lookup(BillingCosts).get(dictionary.insurancePlan).COST;
-	
-	$out.0.Duration = (isnull($in.0.minDurationDays) ? "" : num2str($in.0.minDurationDays));
-	$out.0.InsuranceCaseNumber = dictionary.insuranceCaseNumber;
 	$out.0.InsurancePlan = dictionary.insurancePlan;
+	$out.0.InsuranceCaseNumber = dictionary.insuranceCaseNumber;
+	$out.0.Cost = lookup(BillingCriteria).get(dictionary.insurancePlan).COST;
+	$out.0.Duration = (isnull($in.0.minDurationDays) ? "" : num2str($in.0.minDurationDays));
 	$out.0.EpisodeId = $in.0.episodeId;
 	$out.0.PatientId = $in.0.patientId;
 	return ALL;
@@ -80,7 +76,7 @@ function integer transform() {
 <Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiHeight="0" guiName="XML READER" guiWidth="0" guiX="20" guiY="20" id="XML_READER0" type="XML_READER">
 <attr name="xmlSchemaURL"><![CDATA[./src/main/resources/hospital-information.xsd]]></attr>
 <attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Context namespacePaths="ns0=&quot;http://www.mule-health.com/HospitalInformation/&quot;" outPort="0" sequenceField="__id" xpath="/ns0:episode">
+<Context namespacePaths="ns0=&quot;http://www.mule-health.com/HospitalInformation/&quot;" outPort="0" sequenceField="__id" xpath="/ns0:Episode">
   <Mapping cloverField="patientId" trim="true" xpath="patientId"/>
   <Mapping cloverField="episodeId" trim="true" xpath="episodeId"/>
   <Mapping cloverField="startDate" trim="true" xpath="startDate"/>

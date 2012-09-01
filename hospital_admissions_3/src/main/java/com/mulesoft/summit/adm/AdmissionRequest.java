@@ -2,6 +2,7 @@
 package com.mulesoft.summit.adm;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -9,7 +10,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
@@ -60,7 +60,7 @@ public class AdmissionRequest implements Serializable {
     protected String firstName;
     @XmlElement(required = true)
     @XmlSchemaType(name = "date")
-    protected XMLGregorianCalendar dateOfBirth;
+    protected Date dateOfBirth;
     @XmlElement(required = true)
     protected GenderType gender;
     @XmlElement(required = true)
@@ -147,10 +147,10 @@ public class AdmissionRequest implements Serializable {
      * 
      * @return
      *     possible object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link Date }
      *     
      */
-    public XMLGregorianCalendar getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
@@ -159,10 +159,10 @@ public class AdmissionRequest implements Serializable {
      * 
      * @param value
      *     allowed object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link Date }
      *     
      */
-    public void setDateOfBirth(XMLGregorianCalendar value) {
+    public void setDateOfBirth(Date value) {
         this.dateOfBirth = value;
     }
 

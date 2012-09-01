@@ -1,7 +1,10 @@
 
 package com.mulesoft.summit.adm;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.namespace.QName;
 
 
 /**
@@ -21,12 +24,21 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _Episode_QNAME = new QName("http://www.mule-health.com/HospitalInformation/", "Episode");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.mulesoft.summit.adm
      * 
      */
     public ObjectFactory() {
+    }
+
+    /**
+     * Create an instance of {@link EpisodeType }
+     * 
+     */
+    public EpisodeType createEpisodeType() {
+        return new EpisodeType();
     }
 
     /**
@@ -38,11 +50,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link EpisodeType }
+     * Create an instance of {@link Insurance }
      * 
      */
-    public EpisodeType createEpisodeType() {
-        return new EpisodeType();
+    public Insurance createInsurance() {
+        return new Insurance();
     }
 
     /**
@@ -59,6 +71,15 @@ public class ObjectFactory {
      */
     public Procedure createProcedure() {
         return new Procedure();
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link EpisodeType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.mule-health.com/HospitalInformation/", name = "Episode")
+    public JAXBElement<EpisodeType> createEpisode(EpisodeType value) {
+        return new JAXBElement<EpisodeType>(_Episode_QNAME, EpisodeType.class, null, value);
     }
 
 }

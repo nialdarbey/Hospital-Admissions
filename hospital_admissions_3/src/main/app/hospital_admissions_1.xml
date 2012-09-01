@@ -21,7 +21,7 @@ http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule
 			<spring:property name="driverName" value="org.apache.derby.jdbc.EmbeddedDriver" />
 			<spring:property name="url" value="jdbc:derby:muleEmbeddedDB;create=true" />
 		</spring:bean>
-		<spring:bean name="samlCustomValidator" class="com.mulesoft.summit.security.SAMLCustomValidator" id="" />
+		<spring:bean name="samlCustomValidator" class="com.mulesoft.summit.security.SAMLCustomValidator" id=""/>
 	</spring:beans>
 	<configuration doc:name="Configuration">
 		<expression-language autoResolveVariables="false">
@@ -29,27 +29,13 @@ http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule
 			<import name="AdmissionResponse" class="com.mulesoft.summit.adm.AdmissionResponse" />
 			<import name="AdmissionStatusType" class="com.mulesoft.summit.adm.StatusType" />
 			<import name="Episode" class="com.mulesoft.summit.adm.Episode" />
-			<import name="XmlCalendarFactory" class="javax.xml.datatype.DatatypeFactory" />
-
 			<import name="HospitalCoverResponse" class="com.mulesoft.summit.ins.HospitalCoverResponse" />
 			<import name="PlanType" class="com.mulesoft.summit.ins.PlanType" />
-			<import name="XmlCalendar" class="javax.xml.datatype.XMLGregorianCalendar" />
-
-			<alias name="appName" expression="app.name" />
-			<global-functions>
-				               def echo(text) {text}
-				               def hello() {'Hello '+appName+'!'}
-				               def appendPayload() {payload+'appended'}
-				               def reversePayload() {StringUtils.reverse(payload)}
- 			</global-functions>
 		</expression-language>
 	</configuration>
 	<jdbc-ee:connector name="JDBCConnector" dataSource-ref="Derby_Data_Source" validateConnections="true" queryTimeout="-1" pollingFrequency="0" doc:name="Database (JDBC)" />
-	<data-mapper:config name="AdmissionRequest_to_HospitalCoverRequest" transformationGraphPath="admissionrequest_to_hospitalcoverrequest.grf" doc:name="DataMapper" />
 	<file:connector name="FileConnector" autoDelete="true" outputAppend="true" streaming="true" validateConnections="true" doc:name="File" outputPattern="episodes.csv" />
-	<jms:activemq-connector name="Active_MQ" brokerURL="vm://localhost" validateConnections="true" doc:name="Active MQ" />
-	<data-mapper:config name="AdmissionRequest_to_Billing_Episodes_CSV" transformationGraphPath="admissionrequest_to_billing_episodes_csv.grf" doc:name="DataMapper" />
-	<data-mapper:config name="EpisodeXml_to_AmissionResponse" transformationGraphPath="episodexml_to_amissionresponse.grf" doc:name="DataMapper" />
+	<data-mapper:config name="AdmissionRequest_to_HospitalCoverRequest" transformationGraphPath="admissionrequest_to_hospitalcoverrequest.grf" doc:name="DataMapper" />
 	<data-mapper:config name="EpisodeXml_to_AdmissionResponse" transformationGraphPath="episodexml_to_admissionresponse.grf" doc:name="DataMapper" />
 	<data-mapper:config name="to_Billing_CSV" transformationGraphPath="to_billing_csv.grf" doc:name="DataMapper" />
 	<flow name="admisssions" doc:name="admisssions">
@@ -79,7 +65,8 @@ http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule
 					<flow-ref name="admit_patient" doc:name="Admit Patient" />
 					<data-mapper:transform config-ref="EpisodeXml_to_AdmissionResponse" doc:name="to AdmissionResponse">
 						<data-mapper:input-arguments>
-							<data-mapper:input-argument key="insurancePlan">#[sessionVars.insurance.plan.value()]</data-mapper:input-argument>
+                            <data-mapper:input-argument key="insuranceCaseNumber">#[sessionVars.insurance.caseNumber]</data-mapper:input-argument>
+                            <data-mapper:input-argument key="insurancePlan">#[sessionVars.insurance.plan.value()]</data-mapper:input-argument>
 						</data-mapper:input-arguments>
 					</data-mapper:transform>
 				</processor-chain>
@@ -112,14 +99,14 @@ http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule
 	<sub-flow name="get_record_from_HIS" doc:name="get_record_from_HIS">
 		<scripting:component doc:name="Populate table">
 			<scripting:script engine="Groovy">
-				<scripting:text><![CDATA[jdbcConnector = muleContext.getRegistry().lookupConnector("JDBCConnector");
-                                                                                                                                                        qr = jdbcConnector.getQueryRunner();
-                                                                                                                                                        conn = jdbcConnector.getConnection();
-                                                                                                                                                        qr.update(conn, "declare global temporary table patients(patient_id varchar(256), patient_nat_id varchar(265)) not logged");
-                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA1111', 'NA1111')");
-                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA2222', 'NA2222')");
-                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA3333', 'NA3333')");
-                                                                                                                                                        return payload;]]></scripting:text>
+                <scripting:text><![CDATA[jdbcConnector = muleContext.getRegistry().lookupConnector("JDBCConnector");
+                                                                                                                                                                                        qr = jdbcConnector.getQueryRunner();
+                                                                                                                                                                                        conn = jdbcConnector.getConnection();
+                                                                                                                                                                                        qr.update(conn, "declare global temporary table patients(patient_id varchar(256), patient_nat_id varchar(265)) not logged");
+                                                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA1111', 'NA1111')");
+                                                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA2222', 'NA2222')");
+                                                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA3333', 'NA3333')");
+                                                                                                                                                                                        return payload;]]></scripting:text>
 			</scripting:script>
 		</scripting:component>
 		<jdbc-ee:outbound-endpoint exchange-pattern="request-response" queryKey="select" queryTimeout="-1" connector-ref="JDBCConnector" doc:name="Find Patient Record">
@@ -136,17 +123,18 @@ http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule
 		</tracking:custom-event>
 	</sub-flow>
 	<sub-flow name="export_to_billing_system" doc:name="export_to_billing_system">
-		<data-mapper:transform config-ref="to_Billing_CSV" doc:name="to CSV">
-			<data-mapper:input-arguments>
-				<data-mapper:input-argument key="insurancePlan">#[sessionVars.insurance.plan.value()]</data-mapper:input-argument>
-				<data-mapper:input-argument key="insuranceCaseNumber">#[sessionVars.insurance.caseNumber]</data-mapper:input-argument>
-			</data-mapper:input-arguments>
-		</data-mapper:transform>
-		<object-to-string-transformer doc:name="Object to String" />
-		<file:outbound-endpoint responseTimeout="10000" doc:name="/home/billing" connector-ref="FileConnector" path="/Users/nialdarbey/test/billing" />
-		<tracking:custom-event event-name="billing_event" doc:name="Patient Billing">
+        <data-mapper:transform config-ref="to_Billing_CSV" doc:name="to CSV">
+            <data-mapper:input-arguments>
+                <data-mapper:input-argument key="insuranceCaseNumber">#[sessionVars.insurance.caseNumber]</data-mapper:input-argument>
+                <data-mapper:input-argument key="insurancePlan">#[sessionVars.insurancePlan]</data-mapper:input-argument>
+            </data-mapper:input-arguments>
+        </data-mapper:transform>
+        <byte-array-to-object-transformer doc:name="Byte Array to Object"/>
+        <tracking:custom-event event-name="billing_event" doc:name="Patient Billing">
 			<tracking:meta-data key="episodeId" value="#[payload.EpisodeId]" />
 			<tracking:meta-data key="cost" value="#[payload.Cost]" />
 		</tracking:custom-event>
+		<object-to-string-transformer doc:name="Object to String" />
+		<file:outbound-endpoint responseTimeout="10000" doc:name="/home/billing" connector-ref="FileConnector" path="/Users/nialdarbey/test/billing" />
 	</sub-flow>
 </mule>
