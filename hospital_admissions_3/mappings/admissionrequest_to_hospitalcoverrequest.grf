@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="nialdarbey" created="Mon Aug 27 22:50:14 GMT-03:00 2012" guiVersion="3.3.0.M2" id="1346178608982" licenseCode="Unlicensed" licenseType="Unknown" modified="Mon Aug 27 22:50:14 GMT-03:00 2012" modifiedBy="nialdarbey" name="AdmissionRequest to HospitalCoverRequest" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Output" id="Metadata1">
+<Record fieldDelimiter="|" name="HospitalCoverRequest" recordDelimiter="&#10;" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __sourcePath="{}/object/fullName" label="fullName" name="fullName" type="string"/>
+<Field __sourcePath="{}/object/insuranceNumber" label="insuranceNumber" name="insuranceNumber" type="string"/>
+</Record>
+</Metadata>
+<Metadata __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Input" id="Metadata2">
+<Record fieldDelimiter="|" name="AdmissionRequest" recordDelimiter="&#10;" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __sourcePath="{}/object/address" containerType="" label="address" name="address" type="string"/>
+<Field __sourcePath="{}/object/dateOfBirth/day" containerType="" label="day" name="day" type="integer"/>
+<Field __sourcePath="{}/object/dateOfBirth/fractionalSecond" containerType="" label="fractionalSecond" name="fractionalSecond" type="decimal"/>
+<Field __sourcePath="{}/object/dateOfBirth/hour" containerType="" label="hour" name="hour" type="integer"/>
+<Field __sourcePath="{}/object/dateOfBirth/millisecond" containerType="" label="millisecond" name="millisecond" type="integer"/>
+<Field __sourcePath="{}/object/dateOfBirth/minute" containerType="" label="minute" name="minute" type="integer"/>
+<Field __sourcePath="{}/object/dateOfBirth/month" containerType="" label="month" name="month" type="integer"/>
+<Field __sourcePath="{}/object/dateOfBirth/second" containerType="" label="second" name="second" type="integer"/>
+<Field __sourcePath="{}/object/dateOfBirth/timezone" containerType="" label="timezone" name="timezone" type="integer"/>
+<Field __sourcePath="{}/object/dateOfBirth/year" containerType="" label="year" name="year" type="integer"/>
+<Field __sourcePath="{}/object/firstName" containerType="" label="firstName" name="firstName" type="string"/>
+<Field __sourcePath="{}/object/gender" containerType="" label="gender" name="gender" type="string"/>
+<Field __sourcePath="{}/object/lastName" containerType="" label="lastName" name="lastName" type="string"/>
+<Field __sourcePath="{}/object/nationalIdNumber" containerType="" label="nationalIdNumber" name="nationalIdNumber" type="string"/>
+<Field __sourcePath="{}/object/nationality" containerType="" label="nationality" name="nationality" type="string"/>
+<Field __sourcePath="{}/object/procedure/care" containerType="" label="care" name="care" type="string"/>
+<Field __sourcePath="{}/object/procedure/department" containerType="" label="department" name="department" type="string"/>
+<Field __sourcePath="{}/object/procedure/type" containerType="" label="type" name="type" type="string"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node enabled="enabled" fileURL="dict:inputPayload" guiHeight="0" guiName="Pojo READER" guiWidth="0" guiX="20" guiY="20" id="BEAN_READER0" type="BEAN_READER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context outPort="0" sequenceField="__id" xpath=".">
+  <Mapping cloverField="address" trim="true" xpath="address"/>
+  <Mapping cloverField="day" trim="true" xpath="dateOfBirth/day"/>
+  <Mapping cloverField="fractionalSecond" trim="true" xpath="dateOfBirth/fractionalSecond"/>
+  <Mapping cloverField="hour" trim="true" xpath="dateOfBirth/hour"/>
+  <Mapping cloverField="millisecond" trim="true" xpath="dateOfBirth/millisecond"/>
+  <Mapping cloverField="minute" trim="true" xpath="dateOfBirth/minute"/>
+  <Mapping cloverField="month" trim="true" xpath="dateOfBirth/month"/>
+  <Mapping cloverField="second" trim="true" xpath="dateOfBirth/second"/>
+  <Mapping cloverField="timezone" trim="true" xpath="dateOfBirth/timezone"/>
+  <Mapping cloverField="year" trim="true" xpath="dateOfBirth/year"/>
+  <Mapping cloverField="firstName" trim="true" xpath="firstName"/>
+  <Mapping cloverField="gender" trim="true" xpath="gender"/>
+  <Mapping cloverField="lastName" trim="true" xpath="lastName"/>
+  <Mapping cloverField="nationalIdNumber" trim="true" xpath="nationalIdNumber"/>
+  <Mapping cloverField="nationality" trim="true" xpath="nationality"/>
+  <Mapping cloverField="care" trim="true" xpath="procedure/care"/>
+  <Mapping cloverField="department" trim="true" xpath="procedure/department"/>
+  <Mapping cloverField="type" trim="true" xpath="procedure/type"/>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<schema-object>
+  <typed-object-ref type-ref="com.mulesoft.summit.adm.AdmissionRequest"/>
+  <typed-object type="com.mulesoft.summit.adm.ProcedureType"/>
+  <typed-object type="com.mulesoft.summit.adm.CareType"/>
+  <typed-object type="int"/>
+  <typed-object type="javax.xml.datatype.XMLGregorianCalendar">
+    <typed-object-ref name="day" type-ref="int"/>
+    <typed-object-ref name="fractionalSecond" type-ref="java.math.BigDecimal"/>
+    <typed-object-ref name="hour" type-ref="int"/>
+    <typed-object-ref name="millisecond" type-ref="int"/>
+    <typed-object-ref name="minute" type-ref="int"/>
+    <typed-object-ref name="month" type-ref="int"/>
+    <typed-object-ref name="second" type-ref="int"/>
+    <typed-object-ref name="timezone" type-ref="int"/>
+    <typed-object-ref name="year" type-ref="int"/>
+  </typed-object>
+  <typed-object type="java.math.BigDecimal"/>
+  <typed-object type="java.lang.String"/>
+  <typed-object type="com.mulesoft.summit.adm.AdmissionRequest">
+    <typed-object-ref name="address" type-ref="java.lang.String"/>
+    <typed-object-ref name="dateOfBirth" type-ref="javax.xml.datatype.XMLGregorianCalendar"/>
+    <typed-object-ref name="firstName" type-ref="java.lang.String"/>
+    <typed-object-ref name="gender" type-ref="com.mulesoft.summit.adm.GenderType"/>
+    <typed-object-ref name="lastName" type-ref="java.lang.String"/>
+    <typed-object-ref name="nationalIdNumber" type-ref="java.lang.String"/>
+    <typed-object-ref name="nationality" type-ref="java.lang.String"/>
+    <typed-object-ref name="procedure" type-ref="com.mulesoft.summit.adm.Procedure"/>
+  </typed-object>
+  <typed-object type="com.mulesoft.summit.adm.Procedure">
+    <typed-object-ref name="care" type-ref="com.mulesoft.summit.adm.CareType"/>
+    <typed-object-ref name="department" type-ref="java.lang.String"/>
+    <typed-object-ref name="type" type-ref="com.mulesoft.summit.adm.ProcedureType"/>
+  </typed-object>
+  <typed-object type="com.mulesoft.summit.adm.GenderType"/>
+</schema-object>
+]]></attr>
+</Node>
+<Node enabled="enabled" fileURL="dict:outputPayload" guiHeight="0" guiName="Pojo WRITER" guiWidth="0" guiX="680" guiY="20" id="BEAN_WRITER0" type="BEAN_WRITER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<object xmlns:clover="http://www.cloveretl.com/ns/xmlmapping" clover:inPort="0">
+  <fullName>$0.fullName</fullName>
+  <insuranceNumber>$0.insuranceNumber</insuranceNumber>
+</object>]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<schema-object>
+  <typed-object-ref type-ref="com.mulesoft.summit.ins.HospitalCoverRequest"/>
+  <typed-object type="com.mulesoft.summit.ins.HospitalCoverRequest">
+    <typed-object-ref name="fullName" type-ref="java.lang.String"/>
+    <typed-object-ref name="insuranceNumber" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="java.lang.String"/>
+</schema-object>
+]]></attr>
+</Node>
+<Node enabled="enabled" guiHeight="0" guiName="object_to_object" guiWidth="0" guiX="240" guiY="20" id="REFORMAT0" type="REFORMAT">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.fullName = $in.0.firstName + ' ' + $in.0.lastName;
+	$out.0.insuranceNumber = $in.0.nationalIdNumber;
+$out.0.__id=$in.0.__id;
+		return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="BEAN_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="Metadata2" outPort="Port 0 (out)" toNode="REFORMAT0:0"/>
+<Edge debugMode="true" fromNode="REFORMAT0:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="Metadata1" outPort="Port 0 (out)" toNode="BEAN_WRITER0:0"/>
+</Phase>
+</Graph>

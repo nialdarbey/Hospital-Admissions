@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema targetNamespace="http://www.mule-health.com/HospitalInformation/" xmlns:hos="http://www.mule-health.com/HospitalInformation/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+         <xs:element name="AdmissionRequest">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="nationalIdNumber" type="xs:string"/>
+                  <xs:element name="lastName" type="xs:string"/>
+                  <xs:element name="firstName" type="xs:string"/>
+                  <xs:element name="dateOfBirth" type="xs:date"/>
+                  <xs:element name="gender" type="hos:GenderType"/>
+                  <xs:element name="nationality" type="xs:string"/>
+                  <xs:element name="address" type="xs:string"/>
+                  <xs:element name="procedure" type="hos:Procedure"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="AdmissionResponse">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="status" type="hos:StatusType"/>
+                  <xs:element minOccurs="0" name="episode" type="hos:EpisodeType"/>
+                  <xs:element minOccurs="0" name="insurancePlan" type="hos:InsurancePlanType" />
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:complexType name="Procedure">
+            <xs:sequence>
+            	<xs:element name="type" type="hos:ProcedureType" />
+            	<xs:element name="admission" type="hos:AdmissionType" />
+            	<xs:element name="department" type="xs:string" />
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="EpisodeType">
+            <xs:sequence>
+               <xs:element name="patientId" type="xs:string"/>
+               <xs:element name="episodeId" type="xs:string"/>
+               <xs:element name="startDate" type="xs:date"/>
+               <xs:element name="minDurationDays" type="xs:integer"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:simpleType name="GenderType">
+            <xs:restriction base="xs:string">
+               <xs:enumeration value="MALE"/>
+               <xs:enumeration value="FEMALE"/>
+            </xs:restriction>
+         </xs:simpleType>
+         <xs:simpleType name="StatusType">
+            <xs:restriction base="xs:string">
+               <xs:enumeration value="ADMISSABLE"/>
+               <xs:enumeration value="NOT_ADMISSABLE"/>
+            </xs:restriction>
+         </xs:simpleType>
+         <xs:simpleType name="ProcedureType">
+            <xs:restriction base="xs:string">
+               <xs:enumeration value="IN_PATIENT"/>
+               <xs:enumeration value="DAY_PATIENT"/>
+               <xs:enumeration value="OUT_PATIENT" />
+            </xs:restriction>
+         </xs:simpleType>
+         <xs:simpleType name="AdmissionType">
+            <xs:restriction base="xs:string">
+               <xs:enumeration value="ELECTIVE"/>
+               <xs:enumeration value="EMERGENCY"/>
+            </xs:restriction>
+         </xs:simpleType>
+         <xs:simpleType name="InsurancePlanType">
+            <xs:restriction base="xs:string">
+               <xs:enumeration value="BASIC"/>
+               <xs:enumeration value="PREMIUM"/>
+               <xs:enumeration value="ROYAL"/>
+            </xs:restriction>
+         </xs:simpleType>
+      </xs:schema>

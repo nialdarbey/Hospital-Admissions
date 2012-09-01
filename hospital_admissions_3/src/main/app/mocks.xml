@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:debugger="http://www.mulesoft.org/schema/mule/debugger" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:jdbc-ee="http://www.mulesoft.org/schema/mule/ee/jdbc" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd 
+http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule/debugger/current/mule-debugger.xsd 
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd 
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd 
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd 
+http://www.mulesoft.org/schema/mule/ee/jdbc http://www.mulesoft.org/schema/mule/ee/jdbc/current/mule-jdbc-ee.xsd ">
+    <spring:beans>
+		<spring:bean name="samlCustomValidator" class="com.mulesoft.summit.security.SAMLCustomValidator" id="" />
+	</spring:beans>
+	<flow name="mock_Insurance_Service" doc:name="mock_Insurance_Service">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="9393" path="approvals" doc:name=":9393/approvals"/>
+        <cxf:jaxws-service serviceClass="com.mulesoft.summit.ins.InsuranceService" doc:name="InsuranceService">
+        <cxf:ws-security>
+				<cxf:ws-config>
+					<cxf:property key="action" value="SAMLTokenUnsigned" />
+					<cxf:property key="signaturePropFile" value="wssecurity.properties" />
+				</cxf:ws-config>
+				<cxf:ws-custom-validator>
+					<cxf:saml2-token-validator ref="samlCustomValidator" />
+				</cxf:ws-custom-validator>
+			</cxf:ws-security>
+		</cxf:jaxws-service>
+        <component class="com.mulesoft.summit.ins.InsuranceServiceImpl" doc:name="InsuranceServiceImpl"/>
+    </flow>
+    <flow name="mocksFlow2" doc:name="mocksFlow2">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="9191" path="approvals" doc:name=":9191/approvals"/>
+        <set-payload value="#['ok']" doc:name="Set Payload"/>
+    </flow>
+    <flow name="clinic_service" doc:name="clinic_service">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="9494" path="ehr" doc:name=":9494/ehr"/>
+        <jersey:resources doc:name="EpisodeResource">
+            <component class="com.mulesoft.summit.ehr.EpisodeResource"/>
+        </jersey:resources>
+    </flow>
+    <flow name="mocksFlow1" doc:name="mocksFlow1">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="9292" path="ehr" doc:name=":9292/ehr"/>
+        <set-payload value="#['x']" doc:name="Set Payload"/>
+    </flow>
+    
+</mule>
