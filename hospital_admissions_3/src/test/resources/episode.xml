@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:Episode xmlns:ns2="http://www.mule-health.com/HospitalInformation/">
+	<patientId>PA2222</patientId>
+	<episodeId>EP123412341</episodeId>
+	<startDate>2012-09-02T09:37:40.248-03:00</startDate>
+	<minDurationDays>6</minDurationDays>
+</ns2:Episode>

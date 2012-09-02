@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Graph author="nialdarbey" created="Thu Aug 30 16:20:12 GMT-03:00 2012" guiVersion="3.3.0.M2" id="1346511278179" licenseCode="Unlicensed" licenseType="Unknown" modified="Thu Aug 30 16:20:12 GMT-03:00 2012" modifiedBy="nialdarbey" name="to Billing CSV" revision="1.0" showComponentDetails="false">
+<Graph author="nialdarbey" created="Thu Aug 30 16:20:12 GMT-03:00 2012" guiVersion="3.3.0.M2" id="1346511278179" licenseCode="Unlicensed" licenseType="Unknown" modified="Thu Aug 30 16:20:12 GMT-03:00 2012" modifiedBy="nialdarbey" name="to Billing CSV" preview-arguments="insurancePlan:'PREMIUM',insuranceCaseNumber:ca-2222" preview-file="${Project_Home}/src/test/resources/episode.xml" revision="1.0" showComponentDetails="false">
 <Global>
 <Metadata _type="Lookup" id="Metadata2">
 <Record fieldDelimiter="," name="BillingCriteria" recordDelimiter="\n" type="delimited">
@@ -17,7 +17,7 @@
 <Field eofAsDelimiter="true" label="Cost" name="Cost" type="string"/>
 </Record>
 </Metadata>
-<Metadata __sourcePath="{http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode" _dataStructure="OBJECT" _id="__id" _type="Input" id="Metadata0">
+<Metadata __sourcePath="{http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode" _dataStructure="OBJECT" _id="__id" _type="Input" id="Metadata3">
 <Record fieldDelimiter="|" name="EpisodeType" recordDelimiter="&#10;" type="delimited">
 <Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
 <Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/patientId" label="patientId" name="patientId" type="string"/>
@@ -45,9 +45,9 @@
 
 // Transforms input record into output record.
 function integer transform() {
+	$out.0.Cost = lookup(BillingCriteria).get(dictionary.insurancePlan).COST;
 	$out.0.InsurancePlan = dictionary.insurancePlan;
 	$out.0.InsuranceCaseNumber = dictionary.insuranceCaseNumber;
-	$out.0.Cost = lookup(BillingCriteria).get(dictionary.insurancePlan).COST;
 	$out.0.Duration = (isnull($in.0.minDurationDays) ? "" : num2str($in.0.minDurationDays));
 	$out.0.EpisodeId = $in.0.episodeId;
 	$out.0.PatientId = $in.0.patientId;
@@ -86,6 +86,6 @@ function integer transform() {
 <attr name="_data_format"><![CDATA[XML]]></attr>
 </Node>
 <Edge debugMode="true" fromNode="REFORMAT0:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="Metadata1" outPort="Port 0 (out)" toNode="DATA_WRITER0:0"/>
-<Edge debugMode="true" fromNode="XML_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (out)" toNode="REFORMAT0:0"/>
+<Edge debugMode="true" fromNode="XML_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="Metadata3" outPort="Port 0 (out)" toNode="REFORMAT0:0"/>
 </Phase>
 </Graph>

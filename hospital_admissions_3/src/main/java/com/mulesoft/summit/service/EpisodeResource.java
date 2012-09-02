@@ -27,7 +27,7 @@ public class EpisodeResource {
 		episode.setMinDurationDays(BigInteger.valueOf(6));
 		episode.setPatientId(patientId);
 		episode.setStartDate(new Date());
-		return new JAXBElement<Episode>(new QName("http://www.mule-health.com/HospitalInformation/", "episode"), Episode.class, episode);
+		return new JAXBElement<Episode>(new QName("http://www.mule-health.com/HospitalInformation/", "Episode"), Episode.class, episode);
 	}
 
 }

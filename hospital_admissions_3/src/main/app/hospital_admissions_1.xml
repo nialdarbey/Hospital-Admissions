@@ -8,12 +8,12 @@ http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd 
 http://www.mulesoft.org/schema/mule/ee/jdbc http://www.mulesoft.org/schema/mule/ee/jdbc/current/mule-jdbc-ee.xsd 
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd 
-http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd 
 http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd 
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd 
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd 
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd 
 http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule/debugger/current/mule-debugger.xsd ">
 
 	<spring:beans>
@@ -51,7 +51,7 @@ http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule
 				</cxf:ws-custom-validator>
 			</cxf:ws-security>
 		</cxf:jaxws-service>
-		<enricher target="sessionVars['insurance']" doc:name="Enrich with hospitalCoverResponse">
+		<enricher target="sessionVars.insurance" doc:name="Enrich with hospitalCoverResponse">
 			<flow-ref name="invoke_insurance_web_service" doc:name="Invoke Insurance Web Service" />
 		</enricher>
 		<choice doc:name="Choice">
@@ -87,7 +87,7 @@ http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule
 		<http:outbound-endpoint exchange-pattern="request-response" host="localhost" port="9393" doc:name="POST :9393/approvals" path="approvals" />
 	</sub-flow>
 	<sub-flow name="admit_patient" doc:name="admit_patient">
-		<enricher target="sessionVars['patientId']" doc:name="Enrich with patientId" source="#[payload[0].PATIENT_ID]">
+		<enricher target="sessionVars.patientId" doc:name="Enrich with patientId" source="#[payload[0].PATIENT_ID]">
 			<flow-ref name="get_record_from_HIS" doc:name="Get PatientId from HIS" />
 		</enricher>
 		<flow-ref name="invoke_ehr_web_service" doc:name="Invoke EHR Web Service" />
@@ -100,13 +100,13 @@ http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule
 		<scripting:component doc:name="Populate table">
 			<scripting:script engine="Groovy">
                 <scripting:text><![CDATA[jdbcConnector = muleContext.getRegistry().lookupConnector("JDBCConnector");
-                                                                                                                                                                                        qr = jdbcConnector.getQueryRunner();
-                                                                                                                                                                                        conn = jdbcConnector.getConnection();
-                                                                                                                                                                                        qr.update(conn, "declare global temporary table patients(patient_id varchar(256), patient_nat_id varchar(265)) not logged");
-                                                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA1111', 'NA1111')");
-                                                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA2222', 'NA2222')");
-                                                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA3333', 'NA3333')");
-                                                                                                                                                                                        return payload;]]></scripting:text>
+                                                                                                                                                                                                                                                                        qr = jdbcConnector.getQueryRunner();
+                                                                                                                                                                                                                                                                        conn = jdbcConnector.getConnection();
+                                                                                                                                                                                                                                                                        qr.update(conn, "declare global temporary table patients(patient_id varchar(256), patient_nat_id varchar(265)) not logged");
+                                                                                                                                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA1111', 'NA1111')");
+                                                                                                                                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA2222', 'NA2222')");
+                                                                                                                                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA3333', 'NA3333')");
+                                                                                                                                                                                                                                                                        return payload;]]></scripting:text>
 			</scripting:script>
 		</scripting:component>
 		<jdbc-ee:outbound-endpoint exchange-pattern="request-response" queryKey="select" queryTimeout="-1" connector-ref="JDBCConnector" doc:name="Find Patient Record">
@@ -119,22 +119,22 @@ http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule
 		<object-to-string-transformer doc:name="Object to String" />
 		<tracking:custom-event event-name="clinical_admission" doc:name="EHR Episode">
 			<tracking:meta-data key="patientId" value="#[sessionVars.patientId]" />
-			<tracking:meta-data key="episodeId" value="#[xpath('/episode/episodeId/text()').text]" />
+            <tracking:meta-data key="episodeId" value="#[xpath('/Episode/episodeId/text()').text]"/>
 		</tracking:custom-event>
 	</sub-flow>
 	<sub-flow name="export_to_billing_system" doc:name="export_to_billing_system">
         <data-mapper:transform config-ref="to_Billing_CSV" doc:name="to CSV">
             <data-mapper:input-arguments>
                 <data-mapper:input-argument key="insuranceCaseNumber">#[sessionVars.insurance.caseNumber]</data-mapper:input-argument>
-                <data-mapper:input-argument key="insurancePlan">#[sessionVars.insurancePlan]</data-mapper:input-argument>
+                <data-mapper:input-argument key="insurancePlan">#[sessionVars.insurance.plan.value()]</data-mapper:input-argument>
             </data-mapper:input-arguments>
         </data-mapper:transform>
-        <byte-array-to-object-transformer doc:name="Byte Array to Object"/>
+        <object-to-string-transformer doc:name="Object to String" />
         <tracking:custom-event event-name="billing_event" doc:name="Patient Billing">
-			<tracking:meta-data key="episodeId" value="#[payload.EpisodeId]" />
-			<tracking:meta-data key="cost" value="#[payload.Cost]" />
+            <tracking:meta-data key="episodeId" value="#[payload.split(',')[1]]"/>
+            <tracking:meta-data key="cost" value="#[payload.split(',')[5]]"/>
 		</tracking:custom-event>
-		<object-to-string-transformer doc:name="Object to String" />
+        <logger message="#[payload]" level="INFO" doc:name="Log CSV"/>
 		<file:outbound-endpoint responseTimeout="10000" doc:name="/home/billing" connector-ref="FileConnector" path="/Users/nialdarbey/test/billing" />
 	</sub-flow>
 </mule>

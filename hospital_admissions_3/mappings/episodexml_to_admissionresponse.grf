@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Graph author="nialdarbey" created="Thu Aug 30 16:20:12 GMT-03:00 2012" guiVersion="3.3.0.M2" id="1346431547154" licenseCode="Unlicensed" licenseType="Unknown" modified="Thu Aug 30 16:20:12 GMT-03:00 2012" modifiedBy="nialdarbey" name="EpisodeXml to AdmissionResponse" revision="1.0" showComponentDetails="false">
+<Graph author="nialdarbey" created="Thu Aug 30 16:20:12 GMT-03:00 2012" guiVersion="3.3.0.M2" id="1346431547154" licenseCode="Unlicensed" licenseType="Unknown" modified="Thu Aug 30 16:20:12 GMT-03:00 2012" modifiedBy="nialdarbey" name="EpisodeXml to AdmissionResponse" preview-file="${Project_Home}/src/test/resources/episode.xml" revision="1.0" showComponentDetails="false">
 <Global>
 <Metadata __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Output" id="Metadata1">
 <Record fieldDelimiter="|" name="AdmissionResponse" recordDelimiter="&#10;" type="delimited">
@@ -13,13 +13,13 @@
 <Field __sourcePath="{}/object/status" label="status" name="status" type="string"/>
 </Record>
 </Metadata>
-<Metadata __sourcePath="{http://www.mule-health.com/HospitalInformation/=ns0}/ns0:episode" _dataStructure="OBJECT" _id="__id" _type="Input" id="Metadata0">
-<Record fieldDelimiter="|" name="Episode" recordDelimiter="&#10;" type="delimited">
+<Metadata __sourcePath="{http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode" _dataStructure="OBJECT" _id="__id" _type="Input" id="Metadata2">
+<Record fieldDelimiter="|" name="EpisodeType" recordDelimiter="&#10;" type="delimited">
 <Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
-<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:episode/patientId" label="patientId" name="patientId" type="string"/>
-<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:episode/episodeId" label="episodeId" name="episodeId" type="string"/>
-<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:episode/startDate" label="startDate" name="startDate" type="date"/>
-<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:episode/minDurationDays" label="minDurationDays" name="minDurationDays" type="integer"/>
+<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/patientId" containerType="" label="patientId" name="patientId" type="string"/>
+<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/episodeId" containerType="" label="episodeId" name="episodeId" type="string"/>
+<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/startDate" containerType="" label="startDate" name="startDate" type="date"/>
+<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/minDurationDays" containerType="" label="minDurationDays" name="minDurationDays" type="integer"/>
 </Record>
 </Metadata>
 <Dictionary>
@@ -72,15 +72,16 @@
 </schema-object>
 ]]></attr>
 </Node>
-<Node enabled="enabled" guiHeight="0" guiName="ns0:episode_to_object" guiWidth="0" guiX="240" guiY="20" id="REFORMAT0" type="REFORMAT">
+<Node enabled="enabled" guiHeight="0" guiName="ns0:Episode_to_object" guiWidth="0" guiX="240" guiY="20" id="REFORMAT0" type="REFORMAT">
 <attr name="transform"><![CDATA[//#CTL2
 
 // Transforms input record into output record.
 function integer transform() {
-	$out.0.caseNumber = dictionary.insuranceCaseNumber;
+	$out.0.status = 'ADMISSABLE';
 	$out.0.plan = dictionary.insurancePlan;
+	$out.0.caseNumber = dictionary.insuranceCaseNumber;
 $out.0.__id=$in.0.__id;
-	$out.0.patientId = $in.0.patientId;
+	$out.0.patientId=$in.0.patientId;
 	$out.0.episodeId=$in.0.episodeId;
 	$out.0.startDate=$in.0.startDate;
 	$out.0.minDurationDays=$in.0.minDurationDays;
@@ -109,7 +110,7 @@ $out.0.__id=$in.0.__id;
 <Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiHeight="0" guiName="XML READER" guiWidth="0" guiX="20" guiY="20" id="XML_READER0" type="XML_READER">
 <attr name="xmlSchemaURL"><![CDATA[./src/main/resources/hospital-information.xsd]]></attr>
 <attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Context namespacePaths="ns0=&quot;http://www.mule-health.com/HospitalInformation/&quot;" outPort="0" sequenceField="__id" xpath="/ns0:episode">
+<Context namespacePaths="ns0=&quot;http://www.mule-health.com/HospitalInformation/&quot;" outPort="0" sequenceField="__id" xpath="/ns0:Episode">
   <Mapping cloverField="patientId" trim="true" xpath="patientId"/>
   <Mapping cloverField="episodeId" trim="true" xpath="episodeId"/>
   <Mapping cloverField="startDate" trim="true" xpath="startDate"/>
@@ -119,6 +120,6 @@ $out.0.__id=$in.0.__id;
 <attr name="_data_format"><![CDATA[XML]]></attr>
 </Node>
 <Edge debugMode="true" fromNode="REFORMAT0:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="Metadata1" outPort="Port 0 (out)" toNode="BEAN_WRITER0:0"/>
-<Edge debugMode="true" fromNode="XML_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (out)" toNode="REFORMAT0:0"/>
+<Edge debugMode="true" fromNode="XML_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="Metadata2" outPort="Port 0 (out)" toNode="REFORMAT0:0"/>
 </Phase>
 </Graph>
