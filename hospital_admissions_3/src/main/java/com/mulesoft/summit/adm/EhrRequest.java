@@ -1,4 +1,3 @@
-
 package com.mulesoft.summit.adm;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,12 +32,12 @@ import javax.xml.bind.annotation.XmlType;
     "patientId",
     "procedure"
 })
-@XmlRootElement(name = "ClinicRequest")
-public class ClinicRequest {
+@XmlRootElement(name = "EhrRequest")
+public class EhrRequest {
 
     @XmlElement(required = true)
     protected String patientId;
-    @XmlElement(required = true)
+    @XmlElement(required = false)
     protected Procedure procedure;
 
     /**

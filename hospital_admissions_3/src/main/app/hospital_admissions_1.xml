@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:debugger="http://www.mulesoft.org/schema/mule/debugger" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:jdbc-ee="http://www.mulesoft.org/schema/mule/ee/jdbc" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
 http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd 
@@ -9,31 +9,32 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 http://www.mulesoft.org/schema/mule/ee/jdbc http://www.mulesoft.org/schema/mule/ee/jdbc/current/mule-jdbc-ee.xsd 
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd 
 http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd 
-http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd 
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
-http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd 
-http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd 
-http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule/debugger/current/mule-debugger.xsd ">
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd ">
 
+	<mulexml:namespace-manager includeConfigNamespaces="false">
+        <mulexml:namespace prefix="ep" uri="http://www.mule-health.com/HospitalInformation/"/>
+	</mulexml:namespace-manager>
 	<spring:beans>
 		<spring:bean id="Derby_Data_Source" class="org.enhydra.jdbc.standard.StandardXADataSource" destroy-method="shutdown">
 			<spring:property name="driverName" value="org.apache.derby.jdbc.EmbeddedDriver" />
 			<spring:property name="url" value="jdbc:derby:muleEmbeddedDB;create=true" />
 		</spring:bean>
-		<spring:bean name="samlCustomValidator" class="com.mulesoft.summit.security.SAMLCustomValidator" id=""/>
+		<spring:bean name="samlCustomValidator" class="com.mulesoft.summit.security.SAMLCustomValidator" id="samlCustomValidatorBean" />
 	</spring:beans>
 	<configuration doc:name="Configuration">
 		<expression-language autoResolveVariables="false">
 			<import name="CoverStatusType" class="com.mulesoft.summit.ins.StatusType" />
 			<import name="AdmissionResponse" class="com.mulesoft.summit.adm.AdmissionResponse" />
 			<import name="AdmissionStatusType" class="com.mulesoft.summit.adm.StatusType" />
+			<import name="EhrRequest" class="com.mulesoft.summit.adm.EhrRequest" />
 			<import name="Episode" class="com.mulesoft.summit.adm.Episode" />
 			<import name="HospitalCoverResponse" class="com.mulesoft.summit.ins.HospitalCoverResponse" />
 			<import name="PlanType" class="com.mulesoft.summit.ins.PlanType" />
 		</expression-language>
 	</configuration>
-	<jdbc-ee:connector name="JDBCConnector" dataSource-ref="Derby_Data_Source" validateConnections="true" queryTimeout="-1" pollingFrequency="0" doc:name="Database (JDBC)" />
+	<jdbc-ee:connector name="JDBCConnector" dataSource-ref="Derby_Data_Source" validateConnections="true" queryTimeout="-1" pollingFrequency="0" doc:name="Database" />
 	<file:connector name="FileConnector" autoDelete="true" outputAppend="true" streaming="true" validateConnections="true" doc:name="File" outputPattern="episodes.csv" />
 	<data-mapper:config name="AdmissionRequest_to_HospitalCoverRequest" transformationGraphPath="admissionrequest_to_hospitalcoverrequest.grf" doc:name="DataMapper" />
 	<data-mapper:config name="EpisodeXml_to_AdmissionResponse" transformationGraphPath="episodexml_to_admissionresponse.grf" doc:name="DataMapper" />
@@ -65,8 +66,8 @@ http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule
 					<flow-ref name="admit_patient" doc:name="Admit Patient" />
 					<data-mapper:transform config-ref="EpisodeXml_to_AdmissionResponse" doc:name="to AdmissionResponse">
 						<data-mapper:input-arguments>
-                            <data-mapper:input-argument key="insuranceCaseNumber">#[sessionVars.insurance.caseNumber]</data-mapper:input-argument>
-                            <data-mapper:input-argument key="insurancePlan">#[sessionVars.insurance.plan.value()]</data-mapper:input-argument>
+							<data-mapper:input-argument key="insuranceCaseNumber">#[sessionVars.insurance.caseNumber]</data-mapper:input-argument>
+							<data-mapper:input-argument key="insurancePlan">#[sessionVars.insurance.plan.value()]</data-mapper:input-argument>
 						</data-mapper:input-arguments>
 					</data-mapper:transform>
 				</processor-chain>
@@ -96,45 +97,29 @@ http://www.mulesoft.org/schema/mule/debugger http://www.mulesoft.org/schema/mule
 			<flow-ref name="export_to_billing_system" doc:name="Export to Billing System" />
 		</async>
 	</sub-flow>
-	<sub-flow name="get_record_from_HIS" doc:name="get_record_from_HIS">
-		<scripting:component doc:name="Populate table">
-			<scripting:script engine="Groovy">
-                <scripting:text><![CDATA[jdbcConnector = muleContext.getRegistry().lookupConnector("JDBCConnector");
-                                                                                                                                                                                                                                                                        qr = jdbcConnector.getQueryRunner();
-                                                                                                                                                                                                                                                                        conn = jdbcConnector.getConnection();
-                                                                                                                                                                                                                                                                        qr.update(conn, "declare global temporary table patients(patient_id varchar(256), patient_nat_id varchar(265)) not logged");
-                                                                                                                                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA1111', 'NA1111')");
-                                                                                                                                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA2222', 'NA2222')");
-                                                                                                                                                                                                                                                                        qr.update(conn, "insert into patients (patient_id, patient_nat_id) values ('PA3333', 'NA3333')");
-                                                                                                                                                                                                                                                                        return payload;]]></scripting:text>
-			</scripting:script>
-		</scripting:component>
-		<jdbc-ee:outbound-endpoint exchange-pattern="request-response" queryKey="select" queryTimeout="-1" connector-ref="JDBCConnector" doc:name="Find Patient Record">
-			<jdbc-ee:query key="select" value="select * from (select row_number() over() as rowNum, patients.* from patients where patient_nat_id = #[payload.nationalIdNumber]) as tmp where rowNum &lt;= 1" />
-		</jdbc-ee:outbound-endpoint>
-	</sub-flow>
 	<sub-flow name="invoke_ehr_web_service" doc:name="invoke_ehr_web_service">
-		<set-payload value="#[ [ 'admissionRequest' : payload ] ]" doc:name="Set Payload" />
-		<http:outbound-endpoint exchange-pattern="request-response" host="localhost" port="9494" path="ehr/api/#[payload.admissionRequest.procedure.department]/episodes?patientId=#[sessionVars.patientId]" doc:name="GET :9494/ehr/api/#[department]/episodes?patientId=#[patientId]" method="GET" />
+        <set-variable variableName="url" value="ehr/api/#[payload.procedure.department]/episodes" doc:name="Set Resource URL"/>
+		<set-payload value="#['&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;EhrRequest&gt;&lt;patientId&gt;' + sessionVars.patientId + '&lt;/patientId&gt;&lt;/EhrRequest&gt;'] " doc:name="EhrRequest" />
+		<http:outbound-endpoint exchange-pattern="request-response" contentType="text/xml" host="localhost" port="9494" path="#[flowVars.url]" doc:name="POST :9494/#[flowVars.url]" />
 		<object-to-string-transformer doc:name="Object to String" />
-		<tracking:custom-event event-name="clinical_admission" doc:name="EHR Episode">
+		<tracking:custom-event event-name="new_ehr_episode" doc:name="EHR Episode">
 			<tracking:meta-data key="patientId" value="#[sessionVars.patientId]" />
-            <tracking:meta-data key="episodeId" value="#[xpath('/Episode/episodeId/text()').text]"/>
+			<tracking:meta-data key="episodeId" value="#[xpath('/ep:Episode/episodeId/text()').text]" />
 		</tracking:custom-event>
 	</sub-flow>
 	<sub-flow name="export_to_billing_system" doc:name="export_to_billing_system">
-        <data-mapper:transform config-ref="to_Billing_CSV" doc:name="to CSV">
-            <data-mapper:input-arguments>
-                <data-mapper:input-argument key="insuranceCaseNumber">#[sessionVars.insurance.caseNumber]</data-mapper:input-argument>
-                <data-mapper:input-argument key="insurancePlan">#[sessionVars.insurance.plan.value()]</data-mapper:input-argument>
-            </data-mapper:input-arguments>
-        </data-mapper:transform>
-        <object-to-string-transformer doc:name="Object to String" />
-        <tracking:custom-event event-name="billing_event" doc:name="Patient Billing">
-            <tracking:meta-data key="episodeId" value="#[payload.split(',')[1]]"/>
-            <tracking:meta-data key="cost" value="#[payload.split(',')[5]]"/>
+		<data-mapper:transform config-ref="to_Billing_CSV" doc:name="to CSV">
+			<data-mapper:input-arguments>
+				<data-mapper:input-argument key="insuranceCaseNumber">#[sessionVars.insurance.caseNumber]</data-mapper:input-argument>
+				<data-mapper:input-argument key="insurancePlan">#[sessionVars.insurance.plan.value()]</data-mapper:input-argument>
+			</data-mapper:input-arguments>
+		</data-mapper:transform>
+		<object-to-string-transformer doc:name="Object to String" />
+		<tracking:custom-event event-name="billing_event" doc:name="Patient Billing">
+			<tracking:meta-data key="episodeId" value="#[payload.split(',')[1]]" />
+			<tracking:meta-data key="cost" value="#[payload.split(',')[5]]" />
 		</tracking:custom-event>
-        <logger message="#[payload]" level="INFO" doc:name="Log CSV"/>
+		<logger message="#[payload]" level="INFO" doc:name="Log CSV" />
 		<file:outbound-endpoint responseTimeout="10000" doc:name="/home/billing" connector-ref="FileConnector" path="/Users/nialdarbey/test/billing" />
 	</sub-flow>
 </mule>
