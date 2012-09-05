@@ -17,8 +17,11 @@ public class InsuranceServiceImpl implements InsuranceService {
 			plan = PlanType.ROYAL;
 		} else if (hospitalCoverRequest.getInsuranceNumber().equals("NA2222")) {
 			plan = PlanType.PREMIUM;
-		} else {
+		} else if (hospitalCoverRequest.getInsuranceNumber().equals("NA3333")) {
 			plan = PlanType.BASIC;
+		} else {
+			response.setStatus(StatusType.NOT_COVERED);
+			return response;
 		}
 		response.setStatus(StatusType.COVERED);
 		response.setPlan(plan);

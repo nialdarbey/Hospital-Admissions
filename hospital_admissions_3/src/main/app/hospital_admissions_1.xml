@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 		</spring:bean>
 		<spring:bean name="samlCustomValidator" class="com.mulesoft.summit.security.SAMLCustomValidator" id="samlCustomValidatorBean" />
 	</spring:beans>
-	<configuration doc:name="Configuration">
+	<configuration>
 		<expression-language autoResolveVariables="false">
 			<import name="CoverStatusType" class="com.mulesoft.summit.ins.StatusType" />
 			<import name="AdmissionResponse" class="com.mulesoft.summit.adm.AdmissionResponse" />
