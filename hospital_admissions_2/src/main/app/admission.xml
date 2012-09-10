@@ -57,11 +57,6 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 	<data-mapper:config name="AdmissionRequest_to_HospitalCoverRequest"
 		transformationGraphPath="admissionrequest_to_hospitalcoverrequest.grf"
 		doc:name="DataMapper" />
-	<data-mapper:config name="EpisodeXml_to_AdmissionResponse"
-		transformationGraphPath="episodexml_to_admissionresponse.grf"
-		doc:name="DataMapper" />
-	<data-mapper:config name="to_Billing_CSV"
-		transformationGraphPath="to_billing_csv.grf" doc:name="DataMapper" />
 	<flow name="admisssions" doc:name="admisssions" tracking:enable-default-events="true">
 		<http:inbound-endpoint exchange-pattern="request-response"
 			host="localhost" port="9090" path="admissions" doc:name=":9090/admissions" />
@@ -83,13 +78,7 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 			<otherwise>
 				<processor-chain>
 					<flow-ref name="admit_patient" doc:name="Admit Patient" />
-					<data-mapper:transform config-ref="EpisodeXml_to_AdmissionResponse"
-						doc:name="to AdmissionResponse">
-						<data-mapper:input-arguments>
-							<data-mapper:input-argument key="insuranceCaseNumber">#[sessionVars.insurance.caseNumber]</data-mapper:input-argument>
-							<data-mapper:input-argument key="insurancePlan">#[sessionVars.insurance.plan.value()]</data-mapper:input-argument>
-						</data-mapper:input-arguments>
-					</data-mapper:transform>
+                    <expression-transformer expression="#[with (response = new AdmissionResponse()) { status = AdmissionStatusType.ADMISSABLE }; response]" doc:name="Admissable"/>
 				</processor-chain>
 			</otherwise>
 		</choice>
@@ -108,7 +97,7 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 			doc:name="Enrich with patientId">
 			<jdbc-ee:outbound-endpoint
 				exchange-pattern="request-response" queryKey="retrievePatientId"
-				queryTimeout="-1" connector-ref="JDBCConnector" doc:name="Get patiend ID from HIS" />
+				queryTimeout="-1" connector-ref="JDBCConnector" doc:name="Get patient ID from HIS" />
 		</enricher>
 		<flow-ref name="invoke_ehr_web_service" doc:name="Invoke EHR Web Service" />
 		<async doc:name="Async">
@@ -128,21 +117,8 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 			host="localhost" port="9494" path="#[flowVars.url]" contentType="text/xml"
 			doc:name="POST :9494/#[flowVars.url]" />
 		<object-to-string-transformer doc:name="Object to String" />
-		<tracking:custom-event event-name="new_ehr_episode"
-			doc:name="EHR Episode">
-			<tracking:meta-data key="patientId" value="#[sessionVars.patientId]" />
-			<tracking:meta-data key="episodeId"
-				value="#[xpath('/ep:Episode/episodeId/text()').text]" />
-		</tracking:custom-event>
 	</sub-flow>
 	<sub-flow name="export_to_billing_system" doc:name="export_to_billing_system">
-		<data-mapper:transform config-ref="to_Billing_CSV"
-			doc:name="to CSV">
-			<data-mapper:input-arguments>
-				<data-mapper:input-argument key="insuranceCaseNumber">#[sessionVars.insurance.caseNumber]</data-mapper:input-argument>
-				<data-mapper:input-argument key="insurancePlan">#[sessionVars.insurance.plan.value()]</data-mapper:input-argument>
-			</data-mapper:input-arguments>
-		</data-mapper:transform>
 		<object-to-string-transformer doc:name="Object to String" />
 		<logger message="#[payload]" level="INFO" doc:name="Log CSV" />
 		<file:outbound-endpoint path="/home/ubuntu/billing"
