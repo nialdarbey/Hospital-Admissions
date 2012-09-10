@@ -24,14 +24,14 @@ DROP TABLE IF EXISTS `patient`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `patient` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `national_id` int(11) NOT NULL,
+  `national_id` varchar(100) NOT NULL,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
   `birth` date NOT NULL,
-  `visit_count` int(11) NOT NULL DEFAULT '0',
+  `visit_count` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `national_id_UNIQUE` (`national_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,6 +40,7 @@ CREATE TABLE `patient` (
 
 LOCK TABLES `patient` WRITE;
 /*!40000 ALTER TABLE `patient` DISABLE KEYS */;
+INSERT INTO `patient` VALUES (5,'NA1111','Jesus','De Oliveira','1981-11-04',3),(6,'NA2222','Patricio','Perez','1978-10-10',2);
 /*!40000 ALTER TABLE `patient` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,7 +57,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`hisuser`@`localhost`*/ /*!50003 PROCEDURE `proc_retrievePatientId`(IN nationalId INT, IN firstName VARCHAR(100), IN lastName VARCHAR(100), IN birthDate DATE, OUT patient_id INT)
+/*!50003 CREATE*/ /*!50020 DEFINER=`hisuser`@`localhost`*/ /*!50003 PROCEDURE `proc_retrievePatientId`(IN nationalId VARCHAR(100), IN firstName VARCHAR(100), IN lastName VARCHAR(100), IN birthDate DATE, OUT patient_id INT)
 BEGIN
 	SELECT id INTO patient_id FROM patient WHERE national_id = nationalId;
 	IF patient_id IS NULL THEN
@@ -82,4 +83,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-07 18:44:21
+-- Dump completed on 2012-09-10 14:22:05

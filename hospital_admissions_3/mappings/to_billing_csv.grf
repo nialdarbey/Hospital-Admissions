@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Graph author="nialdarbey" created="Thu Aug 30 16:20:12 GMT-03:00 2012" guiVersion="3.3.0.M2" id="1346511278179" licenseCode="Unlicensed" licenseType="Unknown" modified="Thu Aug 30 16:20:12 GMT-03:00 2012" modifiedBy="nialdarbey" name="to Billing CSV" preview-arguments="insurancePlan:'PREMIUM',insuranceCaseNumber:ca-2222" preview-file="${Project_Home}/src/test/resources/episode.xml" revision="1.0" showComponentDetails="false">
+<?xml version="1.0" encoding="UTF-8"?><Graph author="nialdarbey" created="Thu Aug 30 16:20:12 GMT-03:00 2012" guiVersion="3.3.0.M2" id="1346511278179" licenseCode="Unlicensed" licenseType="Unknown" modified="Thu Aug 30 16:20:12 GMT-03:00 2012" modifiedBy="nialdarbey" name="to Billing CSV" preview-arguments="insurancePlan:'PREMIUM',insuranceCaseNumber:ca-2222" preview-file="${Project_Home}/src/test/resources/episode.xml" revision="1.0" showComponentDetails="false">
 <Global>
 <Metadata _type="Lookup" id="Metadata2">
 <Record fieldDelimiter="," name="BillingCriteria" recordDelimiter="\n" type="delimited">
@@ -26,7 +25,7 @@
 <Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/minDurationDays" label="minDurationDays" name="minDurationDays" type="integer"/>
 </Record>
 </Metadata>
-<LookupTable fileURL="/Users/nialdarbey/git/Hospital Admissions/hospital_admissions_3/src/main/resources/billing-criteria.csv" id="BillingCriteria" key="PLAN" metadata="Metadata2" name="BillingCriteria" type="simpleLookup">
+<LookupTable fileURL="/home/mule/Hospital-Admissions/hospital_admissions_3/src/main/resources/billing-criteria.csv" id="BillingCriteria" key="PLAN" metadata="Metadata2" name="BillingCriteria" type="simpleLookup">
 <attr name="lookupType"><![CDATA[CSV]]></attr>
 </LookupTable>
 <Dictionary>
