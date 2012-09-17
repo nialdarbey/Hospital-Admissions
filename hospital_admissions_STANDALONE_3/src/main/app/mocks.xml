@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" version="EE-3.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd ">
+    <flow name="mock_Insurance_Service" doc:name="mock_Insurance_Service">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="9393" path="approvals" doc:name=":9393/approvals"/>
+        <cxf:jaxws-service serviceClass="com.mulesoft.summit.ins.InsuranceService" doc:name="InsuranceService"/>
+        <component class="com.mulesoft.summit.service.InsuranceServiceImpl" doc:name="InsuranceServiceImpl"/>
+    </flow>
+    <flow name="ehr_service" doc:name="ehr_service">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="9494" path="ehr" doc:name=":9494/ehr"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <mulexml:xslt-transformer maxIdleTransformers="2" maxActiveTransformers="5" xsl-file="ehrRequest-to-episode.xslt" doc:name="to Episode"/>
+    </flow>
+</mule>

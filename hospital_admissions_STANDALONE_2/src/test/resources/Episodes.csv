@@ -1,0 +1,3 @@
+PatientId,EpisodeId,InsurancePlan,InsuranceCaseNumber,Duration,Cost
+P123423,E1234324,PREMIUM,I1111,10,3000
+P308098,E9023492,ROYAL,I2222,5,1500

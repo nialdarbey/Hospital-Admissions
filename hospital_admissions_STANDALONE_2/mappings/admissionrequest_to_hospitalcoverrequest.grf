@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="nialdarbey" created="Mon Aug 27 22:50:14 GMT-03:00 2012" guiVersion="3.3.0.M2" id="1346178608982" licenseCode="Unlicensed" licenseType="Unknown" modified="Mon Aug 27 22:50:14 GMT-03:00 2012" modifiedBy="nialdarbey" name="AdmissionRequest to HospitalCoverRequest" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Output" id="Metadata1">
+<Record fieldDelimiter="|" name="HospitalCoverRequest" recordDelimiter="&#10;" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __sourcePath="{}/object/fullName" label="fullName" name="fullName" type="string"/>
+<Field __sourcePath="{}/object/insuranceNumber" label="insuranceNumber" name="insuranceNumber" type="string"/>
+</Record>
+</Metadata>
+<Metadata __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Input" id="Metadata0">
+<Record fieldDelimiter="|" name="AdmissionRequest" recordDelimiter="&#10;" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __sourcePath="{}/object/address" containerType="" label="address" name="address" type="string"/>
+<Field __sourcePath="{}/object/dateOfBirth" containerType="" label="dateOfBirth" name="dateOfBirth" type="date"/>
+<Field __sourcePath="{}/object/firstName" containerType="" label="firstName" name="firstName" type="string"/>
+<Field __sourcePath="{}/object/gender" containerType="" label="gender" name="gender" type="string"/>
+<Field __sourcePath="{}/object/lastName" containerType="" label="lastName" name="lastName" type="string"/>
+<Field __sourcePath="{}/object/nationalIdNumber" containerType="" label="nationalIdNumber" name="nationalIdNumber" type="string"/>
+<Field __sourcePath="{}/object/nationality" containerType="" label="nationality" name="nationality" type="string"/>
+<Field __sourcePath="{}/object/procedure/admission" containerType="" label="admission" name="admission" type="string"/>
+<Field __sourcePath="{}/object/procedure/department" containerType="" label="department" name="department" type="string"/>
+<Field __sourcePath="{}/object/procedure/type" containerType="" label="type" name="type" type="string"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node enabled="enabled" fileURL="dict:inputPayload" guiHeight="0" guiName="Pojo READER" guiWidth="0" guiX="20" guiY="20" id="BEAN_READER0" type="BEAN_READER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context outPort="0" sequenceField="__id" xpath=".">
+  <Mapping cloverField="address" trim="true" xpath="address"/>
+  <Mapping cloverField="dateOfBirth" trim="true" xpath="dateOfBirth"/>
+  <Mapping cloverField="firstName" trim="true" xpath="firstName"/>
+  <Mapping cloverField="gender" trim="true" xpath="gender"/>
+  <Mapping cloverField="lastName" trim="true" xpath="lastName"/>
+  <Mapping cloverField="nationalIdNumber" trim="true" xpath="nationalIdNumber"/>
+  <Mapping cloverField="nationality" trim="true" xpath="nationality"/>
+  <Mapping cloverField="admission" trim="true" xpath="procedure/admission"/>
+  <Mapping cloverField="department" trim="true" xpath="procedure/department"/>
+  <Mapping cloverField="type" trim="true" xpath="procedure/type"/>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<schema-object>
+  <typed-object-ref type-ref="com.mulesoft.summit.adm.AdmissionRequest"/>
+  <typed-object type="com.mulesoft.summit.adm.ProcedureType"/>
+  <typed-object type="com.mulesoft.summit.adm.AdmissionType"/>
+  <typed-object type="java.lang.String"/>
+  <typed-object type="java.util.Date"/>
+  <typed-object type="com.mulesoft.summit.adm.AdmissionRequest">
+    <typed-object-ref name="address" type-ref="java.lang.String"/>
+    <typed-object-ref name="dateOfBirth" type-ref="java.util.Date"/>
+    <typed-object-ref name="firstName" type-ref="java.lang.String"/>
+    <typed-object-ref name="gender" type-ref="com.mulesoft.summit.adm.GenderType"/>
+    <typed-object-ref name="lastName" type-ref="java.lang.String"/>
+    <typed-object-ref name="nationalIdNumber" type-ref="java.lang.String"/>
+    <typed-object-ref name="nationality" type-ref="java.lang.String"/>
+    <typed-object-ref name="procedure" type-ref="com.mulesoft.summit.adm.Procedure"/>
+  </typed-object>
+  <typed-object type="com.mulesoft.summit.adm.Procedure">
+    <typed-object-ref name="admission" type-ref="com.mulesoft.summit.adm.AdmissionType"/>
+    <typed-object-ref name="department" type-ref="java.lang.String"/>
+    <typed-object-ref name="type" type-ref="com.mulesoft.summit.adm.ProcedureType"/>
+  </typed-object>
+  <typed-object type="com.mulesoft.summit.adm.GenderType"/>
+</schema-object>
+]]></attr>
+</Node>
+<Node enabled="enabled" fileURL="dict:outputPayload" guiHeight="0" guiName="Pojo WRITER" guiWidth="0" guiX="680" guiY="20" id="BEAN_WRITER0" type="BEAN_WRITER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<object xmlns:clover="http://www.cloveretl.com/ns/xmlmapping" clover:inPort="0">
+  <fullName>$0.fullName</fullName>
+  <insuranceNumber>$0.insuranceNumber</insuranceNumber>
+</object>]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<schema-object>
+  <typed-object-ref type-ref="com.mulesoft.summit.ins.HospitalCoverRequest"/>
+  <typed-object type="com.mulesoft.summit.ins.HospitalCoverRequest">
+    <typed-object-ref name="fullName" type-ref="java.lang.String"/>
+    <typed-object-ref name="insuranceNumber" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="java.lang.String"/>
+</schema-object>
+]]></attr>
+</Node>
+<Node enabled="enabled" guiHeight="0" guiName="object_to_object" guiWidth="0" guiX="240" guiY="20" id="REFORMAT0" type="REFORMAT">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.insuranceNumber = $in.0.nationalIdNumber;
+	$out.0.fullName = $in.0.firstName + ' ' + $in.0.lastName;
+$out.0.__id=$in.0.__id;
+		return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="BEAN_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (out)" toNode="REFORMAT0:0"/>
+<Edge debugMode="true" fromNode="REFORMAT0:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="Metadata1" outPort="Port 0 (out)" toNode="BEAN_WRITER0:0"/>
+</Phase>
+</Graph>

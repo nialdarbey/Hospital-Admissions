@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="nialdarbey" created="Thu Aug 30 16:20:12 GMT-03:00 2012" guiVersion="3.3.0.M2" id="1346511278179" licenseCode="Unlicensed" licenseType="Unknown" modified="Thu Aug 30 16:20:12 GMT-03:00 2012" modifiedBy="nialdarbey" name="to Billing CSV" preview-arguments="insurancePlan:'PREMIUM',insuranceCaseNumber:ca-2222" preview-file="${Project_Home}/src/test/resources/episode.xml" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata _type="Lookup" id="Metadata0">
+<Record fieldDelimiter="|" name="billingCriteria" recordDelimiter="&#10;" type="delimited">
+<Field name="PLAN" type="string"/>
+<Field name="COST" type="string"/>
+</Record>
+</Metadata>
+<Metadata _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _type="Output" id="Metadata1">
+<Record fieldDelimiter="," name="Episodes" recordDelimiter="\n" type="delimited">
+<Field label="PatientId" name="PatientId" type="string"/>
+<Field label="EpisodeId" name="EpisodeId" type="string"/>
+<Field label="InsurancePlan" name="InsurancePlan" type="string"/>
+<Field label="InsuranceCaseNumber" name="InsuranceCaseNumber" type="string"/>
+<Field label="Duration" name="Duration" type="string"/>
+<Field eofAsDelimiter="true" label="Cost" name="Cost" type="string"/>
+</Record>
+</Metadata>
+<Metadata __sourcePath="{http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode" _dataStructure="OBJECT" _id="__id" _type="Input" id="Metadata3">
+<Record fieldDelimiter="|" name="EpisodeType" recordDelimiter="&#10;" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/patientId" label="patientId" name="patientId" type="string"/>
+<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/episodeId" label="episodeId" name="episodeId" type="string"/>
+<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/startDate" label="startDate" name="startDate" type="date"/>
+<Field __sourcePath="{=,http://www.mule-health.com/HospitalInformation/=ns0}/ns0:Episode/minDurationDays" label="minDurationDays" name="minDurationDays" type="integer"/>
+</Record>
+</Metadata>
+<LookupTable id="billingCriteria" key="PLAN" metadata="Metadata0" name="billingCriteria" type="simpleLookup">
+<attr name="lookupType"><![CDATA[UserDefined]]></attr>
+<attr name="data"><![CDATA[BASIC|0.4
+PREMIUM|0.1
+]]></attr>
+</LookupTable>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+<Entry id="DictionaryEntry2" input="true" name="insurancePlan" output="false" type="string"/>
+<Entry id="DictionaryEntry3" input="true" name="insuranceCaseNumber" output="false" type="string"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node enabled="enabled" fileURL="dict:outputPayload" guiHeight="0" guiName="CSV WRITER" guiWidth="0" guiX="680" guiY="20" id="DATA_WRITER0" type="DATA_WRITER">
+<attr name="_data_format"><![CDATA[CSV]]></attr>
+</Node>
+<Node enabled="enabled" guiHeight="0" guiName="ns0:Episode_to_Episodes" guiWidth="0" guiX="240" guiY="20" id="REFORMAT0" type="REFORMAT">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.Cost = lookup(billingCriteria).get(dictionary.insurancePlan).COST;
+	$out.0.InsurancePlan = dictionary.insurancePlan;
+	$out.0.InsuranceCaseNumber = dictionary.insuranceCaseNumber;
+	$out.0.Duration = (isnull($in.0.minDurationDays) ? "" : num2str($in.0.minDurationDays));
+	$out.0.EpisodeId = $in.0.episodeId;
+	$out.0.PatientId = $in.0.patientId;
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiHeight="0" guiName="XML READER" guiWidth="0" guiX="20" guiY="20" id="XML_READER0" type="XML_READER">
+<attr name="xmlSchemaURL"><![CDATA[./src/main/resources/hospital-information.xsd]]></attr>
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context namespacePaths="ns0=&quot;http://www.mule-health.com/HospitalInformation/&quot;" outPort="0" sequenceField="__id" xpath="/ns0:Episode">
+  <Mapping cloverField="patientId" trim="true" xpath="patientId"/>
+  <Mapping cloverField="episodeId" trim="true" xpath="episodeId"/>
+  <Mapping cloverField="startDate" trim="true" xpath="startDate"/>
+  <Mapping cloverField="minDurationDays" trim="true" xpath="minDurationDays"/>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[XML]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="REFORMAT0:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="Metadata1" outPort="Port 0 (out)" toNode="DATA_WRITER0:0"/>
+<Edge debugMode="true" fromNode="XML_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="Metadata3" outPort="Port 0 (out)" toNode="REFORMAT0:0"/>
+</Phase>
+</Graph>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ins="http://www.mule-insurance.com/Insurance/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Insurance" targetNamespace="http://www.mule-insurance.com/Insurance/">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.mule-insurance.com/Insurance/">
+			<xsd:element name="HospitalCoverRequest">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="fullName" type="xsd:string" />
+						<xsd:element name="insuranceNumber" type="xsd:string" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="HospitalCoverResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="status" type="ins:StatusType" />
+						<xsd:element name="plan" type="ins:PlanType" minOccurs="0" />
+						<xsd:element name="caseNumber" type="xsd:string" minOccurs="0" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:simpleType name="StatusType">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="COVERED" />
+					<xsd:enumeration value="NOT_COVERED" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType name="PlanType">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="BASIC" />
+					<xsd:enumeration value="PREMIUM" />
+					<xsd:enumeration value="ROYAL" />
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="HospitalCoverRequest">
+		<wsdl:part element="ins:HospitalCoverRequest" name="hospitalCoverRequest" />
+	</wsdl:message>
+	<wsdl:message name="HospitalCoverResponse">
+		<wsdl:part element="ins:HospitalCoverResponse" name="hospitalCoverResponse" />
+	</wsdl:message>
+	<wsdl:portType name="InsuranceService">
+		<wsdl:operation name="verify">
+			<wsdl:input message="ins:HospitalCoverRequest" />
+			<wsdl:output message="ins:HospitalCoverResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="InsuranceSOAP" type="ins:InsuranceService">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="verify">
+			<soap:operation soapAction="http://www.mule-insurance.com/Insurance/verify" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="InsuranceService">
+		<wsdl:port binding="ins:InsuranceSOAP" name="InsuranceSOAP">
+			<soap:address location="http://www.mule-insurance.com/" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
